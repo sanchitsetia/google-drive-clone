@@ -3,41 +3,25 @@ import { getUserSession } from "@/app/utils/serverSession";
 import prisma from "../prisma";
 import { strict } from "assert";
 
-export async function fetchFiles() {
+export async function fetchFiles(currentFolder: string) {
+  console.log("lasssss",currentFolder)
 try {
   const session = await getUserSession();
-  console.log(session?.user)
   const files = await prisma.file.findMany({
     where: {
-      uploadedBy: session?.user.id
+      uploadedBy: session?.user.id,
+      parentFolder: currentFolder || ''
     },
     select: {
-      s3Key: true,
+      name: true,
       id: true,
-      size: true
+      size: true,
+      type: true,
     }
     
   })
-  const s3Keys = files.map((obj,ind)=>obj.s3Key)
-  console.log(s3Keys)
-  const root= {}
-  
-  s3Keys.forEach((key)=>{
-    const path = key.replace(`${session?.user.id}/`,"").split("/");
-    let currentLevel:any = root;
-
-    path.forEach((part,index)=>{
-      if(index == path.length-1)
-        currentLevel[part] = {type: "file",key};
-      else
-      {
-        currentLevel[part] = currentLevel[part] || { type: "folder", children: {} };
-        currentLevel = currentLevel[part].children;
-      }
-    })
-  })
-
-  return root;
+  console.log("fileeee",files)
+  return files;
 }
   catch (error) {
   

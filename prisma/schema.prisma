@@ -25,11 +25,13 @@ model User {
 model File {
   id           String  @id @default(cuid())
   name         String
-  size         BigInt
-  mimeType     String
-  s3Key        String  @unique
+  size         BigInt?
+  mimeType     String?
+  s3Key        String? @unique
   uploadedBy   String
-  uploadStatus String
+  uploadStatus String?
+  type         String
+  parentFolder String
   user         User    @relation(fields: [uploadedBy], references: [id])
   chunks       Chunk[]
 }

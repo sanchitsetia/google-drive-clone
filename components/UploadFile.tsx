@@ -2,10 +2,12 @@
 import React, { useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { generatePresignedURL } from "@/app/lib/actions/upload";
+import { useCurrentFolder } from "./currentFolderContext";
 
 const UploadFile = () => {
   const [uploadMessage, setUploadMessage] = useState("");
   const fileInputRef = useRef(null);
+  const { currentFolder, setCurrentFolder } = useCurrentFolder();
 
   const session = useSession();
   const handleFileUpload = async (
@@ -16,7 +18,9 @@ const UploadFile = () => {
       file!.name,
       file!.size,
       file!.type,
-      `${session.data!.user!.id}/`,
+      `${session.data!.user!.id}/${
+        currentFolder ? currentFolder + "/" : currentFolder
+      }`,
       session.data!.user!.id
     );
     console.log(presignedURL);
@@ -51,6 +55,7 @@ const UploadFile = () => {
       disabled:opacity-50"
             onChange={handleFileUpload}
           />
+
           <div>{uploadMessage}</div>
         </div>
       ) : (

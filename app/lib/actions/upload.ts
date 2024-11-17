@@ -15,7 +15,9 @@ export async function generatePresignedURL(fileName:string,size:number,mimeType:
   try {
 
     let s3Key = `${currentDirectory}${fileName}`
-    
+    let parentFolderArr = currentDirectory.split("/")
+    let parentFolder = parentFolderArr[parentFolderArr.length-2]
+
     await prisma.file.upsert({
       create: {
         mimeType,
@@ -23,7 +25,9 @@ export async function generatePresignedURL(fileName:string,size:number,mimeType:
         s3Key,
         size,
         uploadedBy:userId,
-        uploadStatus: 'Uploading'
+        uploadStatus: 'Uploading',
+        type: 'file',
+        parentFolder
       },
       update:{
         mimeType,
