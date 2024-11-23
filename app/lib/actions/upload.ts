@@ -13,10 +13,11 @@ const s3Client = new S3Client({
 
 export async function generatePresignedURL(fileName:string,size:number,mimeType:string,currentDirectory:string,userId:string) {
   try {
-
     let s3Key = `${currentDirectory}${fileName}`
     let parentFolderArr = currentDirectory.split("/")
-    let parentFolder = parentFolderArr[parentFolderArr.length-2]
+    let parentFolderA = parentFolderArr.splice(0,parentFolderArr.length)
+    let parentFolder = parentFolderA.join("/")
+    console.log("paaapaaarent", parentFolder)
 
     await prisma.file.upsert({
       create: {

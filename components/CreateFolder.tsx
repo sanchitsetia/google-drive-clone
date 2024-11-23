@@ -6,12 +6,14 @@ import { useCurrentFolder } from "./currentFolderContext";
 import { createFolderinDB } from "@/app/lib/actions/createFolder";
 
 const CreateFolder = () => {
-  const { currentFolder, setCurrentFolder } = useCurrentFolder();
+  const { currentFolder, setCurrentFolder, triggerFileUpdate } =
+    useCurrentFolder();
   const folderRef = useRef(null);
   const handleFolderCreation = async () => {
     console.log(currentFolder);
     await createFolderinDB(folderRef.current?.value, currentFolder);
     folderRef.current.value = null;
+    triggerFileUpdate();
   };
   return (
     <div>

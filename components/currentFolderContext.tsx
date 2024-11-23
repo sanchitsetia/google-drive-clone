@@ -20,6 +20,11 @@ const CurrentFolderContext = createContext<
   CurrentFolderContextType | undefined
 >(undefined);
 
+const folderUpdateContext = createContext({
+  filesUpdated: false,
+  triggerFileUpdate: () => {},
+});
+
 export const CurrentFolderProvider = ({
   children,
 }: {
@@ -31,15 +36,28 @@ export const CurrentFolderProvider = ({
 
   useEffect(() => {
     if (userId && currentFolder == null) {
-      setCurrentFolder(userId);
+      setCurrentFolder(userId + "/");
     }
   }, [userId]);
 
   console.log("currentFolder", currentFolder);
   console.log("userid", userId);
 
+  const [filesUpdated, setFilesUpdated] = useState(false);
+
+  const triggerFileUpdate = () => {
+    setFilesUpdated((prev) => !prev); // Toggle the state to trigger an update
+  };
+
   return (
-    <CurrentFolderContext.Provider value={{ currentFolder, setCurrentFolder }}>
+    <CurrentFolderContext.Provider
+      value={{
+        currentFolder,
+        setCurrentFolder,
+        filesUpdated,
+        triggerFileUpdate,
+      }}
+    >
       {children}
     </CurrentFolderContext.Provider>
   );

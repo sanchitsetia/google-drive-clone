@@ -7,7 +7,8 @@ import { useCurrentFolder } from "./currentFolderContext";
 const UploadFile = () => {
   const [uploadMessage, setUploadMessage] = useState("");
   const fileInputRef = useRef(null);
-  const { currentFolder, setCurrentFolder } = useCurrentFolder();
+  const { currentFolder, setCurrentFolder, triggerFileUpdate } =
+    useCurrentFolder();
 
   const session = useSession();
   const handleFileUpload = async (
@@ -18,9 +19,7 @@ const UploadFile = () => {
       file!.name,
       file!.size,
       file!.type,
-      `${session.data!.user!.id}/${
-        currentFolder ? currentFolder + "/" : currentFolder
-      }`,
+      currentFolder,
       session.data!.user!.id
     );
     console.log(presignedURL);
@@ -36,6 +35,7 @@ const UploadFile = () => {
     if (upload.ok) {
       console.log("Upload successful");
       if (fileInputRef.current) fileInputRef.current.value = "";
+      triggerFileUpdate();
     }
     setUploadMessage("File Uploaded");
   };
